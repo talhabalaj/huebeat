@@ -34,7 +34,7 @@ struct HuebeatApp: App {
     var body: some Scene {
         Window("Huebeat", id: "main") {
             ContentView(controller: appDelegate.controller)
-                .frame(minWidth: 920, minHeight: 680)
+                .frame(minWidth: 920, minHeight: 540)
         }
         .windowResizability(.contentSize)
         .defaultSize(width: 980, height: 740)

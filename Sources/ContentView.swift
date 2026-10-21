@@ -13,7 +13,21 @@ struct ContentView: View {
         }
     }
 
+    // The controls scroll and the Start button stays pinned, so a short window (tiling, a small display)
+    // clips nothing instead of pushing the title and button out of view.
     private var sidebar: some View {
+        ScrollView {
+            controls
+                .padding(20)
+        }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            runFooter
+                .padding(20)
+                .background(.bar)
+        }
+    }
+
+    private var controls: some View {
         VStack(alignment: .leading, spacing: 18) {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Huebeat")
@@ -55,9 +69,12 @@ struct ContentView: View {
             }
 
             tuningControls
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
 
-            Spacer(minLength: 16)
-
+    private var runFooter: some View {
+        VStack(alignment: .leading, spacing: 10) {
             if let error = controller.lastError {
                 Text(error)
                     .font(.caption)
@@ -78,7 +95,6 @@ struct ContentView: View {
             .buttonStyle(.borderedProminent)
             .keyboardShortcut(.return, modifiers: [])
         }
-        .padding(20)
     }
 
     private var tuningControls: some View {
@@ -100,7 +116,8 @@ struct ContentView: View {
         VStack(spacing: 0) {
             HStack(alignment: .top, spacing: 24) {
                 ColorVisualizer(update: controller.currentColor, isRunning: controller.isRunning)
-                    .frame(width: 360, height: 360)
+                    .aspectRatio(1, contentMode: .fit)
+                    .frame(minWidth: 180, maxWidth: 360, minHeight: 180, maxHeight: 360)
 
                 VStack(alignment: .leading, spacing: 16) {
                     metrics
@@ -109,11 +126,12 @@ struct ContentView: View {
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             }
             .padding(28)
+            .layoutPriority(1)
 
             Divider()
 
             LogView(lines: controller.logLines, onClear: controller.clearLog)
-                .frame(minHeight: 210)
+                .frame(minHeight: 140, maxHeight: .infinity)
         }
         .background(Color(nsColor: .windowBackgroundColor))
     }
@@ -222,7 +240,7 @@ struct MetricView: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
         }
-        .frame(minWidth: 118, alignment: .leading)
+        .frame(minWidth: 96, alignment: .leading)
     }
 }
 
