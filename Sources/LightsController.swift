@@ -1,4 +1,5 @@
-import Foundation
+import AppKit
+import CoreGraphics
 import Observation
 
 @Observable
@@ -8,6 +9,7 @@ final class LightsController {
     private(set) var currentColor: ColorUpdate?
     private(set) var logLines: [String] = []
     var lastError: String?
+    private(set) var needsAudioPermission = false
 
     let bridge = ZigbeeBridge()
 
@@ -28,6 +30,14 @@ final class LightsController {
             lastError = "Connect the Sonoff dongle first, or turn on Dry run."
             return
         }
+        // ScreenCaptureKit audio needs Screen & System Audio Recording. Requesting it shows the system
+        // prompt the first time and lists Huebeat in Privacy settings; afterwards only the user can flip it.
+        guard CGPreflightScreenCaptureAccess() || CGRequestScreenCaptureAccess() else {
+            needsAudioPermission = true
+            lastError = "Huebeat needs Screen & System Audio Recording to hear your music. Turn it on in Privacy settings, then press Start."
+            return
+        }
+        needsAudioPermission = false
         isTransitioning = true
         self.config = config
         lastError = nil
@@ -46,6 +56,10 @@ final class LightsController {
                 appendLog(config.dryRun ? "Listening (dry run, lights untouched)." : "Listening to system audio.")
             } catch {
                 lastError = error.localizedDescription
+                if error.localizedDescription.contains("TCC") {
+                    needsAudioPermission = true
+                    lastError = "macOS blocked audio capture. Turn on Huebeat under Screen & System Audio Recording, then press Start."
+                }
                 appendLog("Start failed: \(error.localizedDescription)")
                 await tearDown()
             }
@@ -72,6 +86,10 @@ final class LightsController {
     func shutdown() async {
         if isRunning { await tearDown() }
         await bridge.shutdown()
+    }
+
+    func openAudioPrivacySettings() {
+        NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture")!)
     }
 
     func clearLog() {

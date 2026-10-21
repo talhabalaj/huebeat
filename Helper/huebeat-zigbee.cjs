@@ -110,6 +110,8 @@ async function pump() {
 async function shutdown(code = 0) {
   if (shuttingDown) return;
   shuttingDown = true;
+  // Unresponsive bulbs can stall the restore; never hold the serial port past this.
+  setTimeout(() => process.exit(code), 6000).unref();
   try {
     if (controller && lights.length) await restore();
     if (controller) await controller.stop();
@@ -132,6 +134,7 @@ async function main() {
     fail(/lock|busy|Resource/i.test(error.message) ? `${port} is busy. Another app is using the dongle.` : `Couldn't start the dongle: ${error.message}`);
     process.exit(5);
   }
+  controller.on('adapterDisconnected', () => { fail('The Sonoff dongle was disconnected.'); process.exit(6); });
   await controller.permitJoin(0);
   lights = controller.getDevices()
     .filter(d => d.type !== 'Coordinator')

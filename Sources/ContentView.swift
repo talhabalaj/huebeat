@@ -62,8 +62,11 @@ struct ContentView: View {
                 Text(error)
                     .font(.caption)
                     .foregroundStyle(.red)
-                    .lineLimit(4)
+                    .fixedSize(horizontal: false, vertical: true)
                     .textSelection(.enabled)
+                if controller.needsAudioPermission {
+                    Button("Open Privacy Settings", action: controller.openAudioPrivacySettings)
+                }
             }
 
             Button(action: toggleRun) {
@@ -322,7 +325,7 @@ struct DongleStatusView: View {
                 Text(message)
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                    .lineLimit(4)
+                    .fixedSize(horizontal: false, vertical: true)
                     .textSelection(.enabled)
             }
             ForEach(bridge.lights) { light in
