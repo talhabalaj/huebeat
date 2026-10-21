@@ -10,6 +10,11 @@ enum ColorMath {
     /// `hue` in degrees, `saturation` 0...1. Brightness is sent separately as a Zigbee level.
     static func xy(hue: Double, saturation: Double) -> XY {
         let (r, g, b) = rgb(hue: hue, saturation: saturation)
+        return xy(red: r, green: g, blue: b)
+    }
+
+    /// sRGB components 0...1.
+    static func xy(red r: Double, green g: Double, blue b: Double) -> XY {
         let (lr, lg, lb) = (linear(r), linear(g), linear(b))
         // sRGB (D65) to CIE XYZ
         let x = 0.4124 * lr + 0.3576 * lg + 0.1805 * lb
@@ -24,6 +29,11 @@ enum ColorMath {
     static func level(value: Int, floor: Int = 40) -> Int {
         let scaled = Double(max(0, min(value, 1000))) / 1000 * 254
         return max(floor, min(254, Int(scaled.rounded())))
+    }
+
+    /// Slider brightness 0...1 to a Zigbee level (1...254).
+    static func level(brightness: Double) -> Int {
+        max(1, min(254, Int((brightness * 254).rounded())))
     }
 
     private static func rgb(hue: Double, saturation: Double) -> (Double, Double, Double) {

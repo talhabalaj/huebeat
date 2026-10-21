@@ -1,7 +1,9 @@
 // Huebeat's Zigbee bridge. The app spawns this with system Node and talks JSON lines over stdin/stdout.
 //
 // app -> helper: {"cmd":"color","x":0.7,"y":0.3,"level":200}   latest wins; stale frames are dropped
-//                {"cmd":"restore"}                              put bulbs back to the state saved at startup
+//                {"cmd":"white","mireds":250,"level":200}        color temperature (153 cool ... 500 warm)
+//                {"cmd":"snapshot"}                             remember the bulbs' state when music starts
+//                {"cmd":"restore"}                              put them back to that state when it stops
 //                {"cmd":"quit"}                                 restore, stop the coordinator, exit (stdin EOF does the same)
 // helper -> app: {"event":"ready","port":...,"lights":[...]} | {"event":"sent",...} | {"event":"log"|"error","message":...}
 'use strict';
@@ -46,9 +48,15 @@ let pending;          // latest {x, y, level} not yet sent
 let lastLevel;
 let sending = false;
 let shuttingDown = false;
+let session = false;   // a music session is running and owes the bulbs a restore
 
-async function saveOriginals() {
+// Taken when music starts, so manual colors set beforehand are what Stop brings back.
+async function snapshot() {
+  pending = undefined;
+  while (sending) await wait(10);
+  sending = true;
   originals = [];
+  session = true;
   for (const light of lights) {
     try {
       const color = await light.endpoint.read('lightingColorCtrl', ['colorMode', 'currentX', 'currentY', 'colorTemperature'], {timeout: 2500});
@@ -57,9 +65,14 @@ async function saveOriginals() {
       originals.push({light, color, level: level.currentLevel, on: onOff.onOff});
     } catch (error) { log(`Couldn't read ${light.name}'s current state, it won't be restored: ${error.message}`); }
   }
+  sending = false;
+  emit('snapshot');
+  pump();
 }
 
 async function restore() {
+  if (!session) return;
+  session = false;
   pending = undefined;
   while (sending) await wait(10);
   sending = true;
@@ -87,17 +100,19 @@ async function pump() {
   sending = true;
   try {
     while (pending && !shuttingDown) {
-      const {x, y, level} = pending;
+      const {cmd, x, y, mireds, level, exactLevel} = pending;
       pending = undefined;
-      const colorx = Math.round(Math.min(Math.max(x, 0), 0.9999) * 65536);
-      const colory = Math.round(Math.min(Math.max(y, 0), 0.9999) * 65536);
-      // Level is a second command per bulb, so only send it when brightness moved noticeably.
-      const sendLevel = Number.isFinite(level) && (lastLevel === undefined || Math.abs(level - lastLevel) >= 40);
+      const colorx = Math.round(Math.min(Math.max(x ?? 0, 0), 0.9999) * 65536);
+      const colory = Math.round(Math.min(Math.max(y ?? 0, 0), 0.9999) * 65536);
+      // Level is a second command per bulb, so music only sends it when brightness moved noticeably.
+      // Manual changes (exactLevel) always send it.
+      const sendLevel = Number.isFinite(level) && (exactLevel || lastLevel === undefined || Math.abs(level - lastLevel) >= 40);
       const started = performance.now();
       let failed = 0;
       for (const light of lights) {
         try {
-          await light.endpoint.command('lightingColorCtrl', 'moveToColor', {colorx, colory, transtime: 0}, SEND);
+          if (cmd === 'white') await light.endpoint.command('lightingColorCtrl', 'moveToColorTemp', {colortemp: Math.round(mireds), transtime: 0}, SEND);
+          else await light.endpoint.command('lightingColorCtrl', 'moveToColor', {colorx, colory, transtime: 0}, SEND);
           if (sendLevel) await light.endpoint.command('genLevelCtrl', 'moveToLevel', {level: Math.round(level), transtime: 0}, SEND);
         } catch { failed++; }
       }
@@ -140,7 +155,6 @@ async function main() {
     .filter(d => d.type !== 'Coordinator')
     .map(d => ({ieee: d.ieeeAddr, name: d.modelID ? `${d.modelID} …${d.ieeeAddr.slice(-4)}` : d.ieeeAddr, endpoint: d.endpoints.find(ep => ep.supportsInputCluster('lightingColorCtrl'))}))
     .filter(l => l.endpoint);
-  await saveOriginals();
   for (const light of lights) {
     try { await light.endpoint.command('genOnOff', 'on', {}, {timeout: 2500}); } catch { /* reported by the next send */ }
   }
@@ -152,7 +166,8 @@ const input = readline.createInterface({input: process.stdin});
 input.on('line', line => {
   let message;
   try { message = JSON.parse(line); } catch { return; }
-  if (message.cmd === 'color') { pending = message; if (controller && lights.length) pump(); }
+  if (message.cmd === 'color' || message.cmd === 'white') { pending = message; if (controller && lights.length) pump(); }
+  else if (message.cmd === 'snapshot') snapshot();
   else if (message.cmd === 'restore') restore();
   else if (message.cmd === 'quit') shutdown();
 });

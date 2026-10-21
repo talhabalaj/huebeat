@@ -134,20 +134,8 @@ struct ContentView: View {
     }
 
     private var quickActions: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Quick Colors")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-            HStack(spacing: 10) {
-                ColorButton(name: "Red", color: .red) { controller.sendQuickColor(hue: 0) }
-                ColorButton(name: "Green", color: .green) { controller.sendQuickColor(hue: 120) }
-                ColorButton(name: "Blue", color: .blue) { controller.sendQuickColor(hue: 240) }
-                Button(action: controller.restoreLights) {
-                    Label("Restore", systemImage: "arrow.uturn.backward")
-                }
-            }
+        ManualLightView(controller: controller)
             .disabled(controller.isRunning || !controller.bridge.isReady)
-        }
     }
 
     private func toggleRun() {
@@ -235,24 +223,6 @@ struct MetricView: View {
                 .minimumScaleFactor(0.7)
         }
         .frame(minWidth: 118, alignment: .leading)
-    }
-}
-
-struct ColorButton: View {
-    let name: String
-    let color: Color
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 8) {
-                Circle()
-                    .fill(color)
-                    .frame(width: 12, height: 12)
-                Text(name)
-            }
-            .frame(minWidth: 82)
-        }
     }
 }
 
@@ -356,6 +326,83 @@ struct DongleStatusView: View {
         case .connecting: .yellow
         case .failed: .red
         case .disconnected: .gray
+        }
+    }
+}
+
+/// Pick a color or a white for every bulb while music is off. Changes apply as you drag.
+struct ManualLightView: View {
+    let controller: LightsController
+
+    private enum Mode: String, CaseIterable, Identifiable {
+        case color = "Color"
+        case white = "White"
+        var id: String { rawValue }
+    }
+
+    @State private var mode: Mode = .color
+    @State private var color = Color(hue: 0.83, saturation: 1, brightness: 1)
+    @State private var mireds = 300.0
+    @State private var brightness = 0.8
+
+    private let swatches: [(String, Color)] = [
+        ("Red", .red), ("Orange", .orange), ("Yellow", .yellow), ("Green", .green),
+        ("Cyan", .cyan), ("Blue", .blue), ("Purple", .purple), ("Pink", .pink),
+    ]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("Manual")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Picker("Mode", selection: $mode) {
+                    ForEach(Mode.allCases) { Text($0.rawValue).tag($0) }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+                .frame(width: 150)
+            }
+
+            if mode == .color {
+                HStack(spacing: 8) {
+                    ColorPicker("Color", selection: $color, supportsOpacity: false)
+                        .labelsHidden()
+                    ForEach(swatches, id: \.0) { name, swatch in
+                        Button { color = swatch } label: {
+                            Circle().fill(swatch).frame(width: 20, height: 20)
+                        }
+                        .buttonStyle(.plain)
+                        .help(name)
+                    }
+                }
+            } else {
+                HStack {
+                    Image(systemName: "sun.max").foregroundStyle(.secondary)
+                    Slider(value: $mireds, in: 153...500)
+                    Image(systemName: "flame").foregroundStyle(.orange)
+                }
+                .help("Cool daylight to warm candlelight")
+            }
+
+            HStack {
+                Image(systemName: "light.min").foregroundStyle(.secondary)
+                Slider(value: $brightness, in: 0.02...1)
+                Image(systemName: "light.max").foregroundStyle(.secondary)
+            }
+        }
+        .onChange(of: color) { _, _ in apply(.color) }
+        .onChange(of: mireds) { _, _ in apply(.white) }
+        .onChange(of: brightness) { _, _ in apply(mode) }
+        .onChange(of: mode) { _, newMode in apply(newMode) }
+    }
+
+    private func apply(_ target: Mode) {
+        mode = target
+        switch target {
+        case .color: controller.setManualColor(color, brightness: brightness)
+        case .white: controller.setManualWhite(mireds: mireds, brightness: brightness)
         }
     }
 }

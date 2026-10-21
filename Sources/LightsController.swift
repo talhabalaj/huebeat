@@ -1,6 +1,7 @@
 import AppKit
 import CoreGraphics
 import Observation
+import SwiftUI
 
 @Observable
 final class LightsController {
@@ -45,6 +46,7 @@ final class LightsController {
         lastQueuedColor = nil
         lastSent = .distantPast
         mapper = AudioColorMapper(config: config)
+        if !config.dryRun { bridge.snapshot() }
 
         Task {
             do {
@@ -72,14 +74,20 @@ final class LightsController {
         Task { await tearDown() }
     }
 
-    func sendQuickColor(hue: Double) {
-        guard bridge.isReady, !isRunning else { return }
-        bridge.send(xy: ColorMath.xy(hue: hue, saturation: 1), level: 254)
-        appendLog("Sent hue \(Int(hue))°.")
+    /// Manual control while music is off. `brightness` is 0...1.
+    func setManualColor(_ color: Color, brightness: Double) {
+        guard bridge.isReady, !isRunning,
+              let rgb = NSColor(color).usingColorSpace(.sRGB) else { return }
+        // The picker's own brightness would double up with the slider, so send the color at full value.
+        var hue: CGFloat = 0, saturation: CGFloat = 0, value: CGFloat = 0, alpha: CGFloat = 0
+        rgb.getHue(&hue, saturation: &saturation, brightness: &value, alpha: &alpha)
+        let xy = ColorMath.xy(hue: Double(hue) * 360, saturation: Double(saturation))
+        bridge.send(xy: xy, level: ColorMath.level(brightness: brightness), exactLevel: true)
     }
 
-    func restoreLights() {
-        bridge.restore()
+    func setManualWhite(mireds: Double, brightness: Double) {
+        guard bridge.isReady, !isRunning else { return }
+        bridge.sendWhite(mireds: Int(mireds.rounded()), level: ColorMath.level(brightness: brightness))
     }
 
     /// Called on quit: stop listening, put the bulbs back and release the serial port.

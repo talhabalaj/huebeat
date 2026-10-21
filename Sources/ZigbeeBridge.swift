@@ -52,10 +52,21 @@ final class ZigbeeBridge {
         }
     }
 
-    func send(xy: ColorMath.XY, level: Int?) {
-        var message: [String: Any] = ["cmd": "color", "x": xy.x, "y": xy.y]
+    /// `exactLevel` always sends brightness; music only sends it when it moved noticeably.
+    func send(xy: ColorMath.XY, level: Int?, exactLevel: Bool = false) {
+        var message: [String: Any] = ["cmd": "color", "x": xy.x, "y": xy.y, "exactLevel": exactLevel]
         if let level { message["level"] = level }
         write(message)
+    }
+
+    /// Color temperature in mireds: 153 is cool daylight, 500 is warm candlelight.
+    func sendWhite(mireds: Int, level: Int) {
+        write(["cmd": "white", "mireds": mireds, "level": level, "exactLevel": true])
+    }
+
+    /// Remembers the bulbs' current state so `restore()` can bring it back after music.
+    func snapshot() {
+        write(["cmd": "snapshot"])
     }
 
     func restore() {
@@ -155,6 +166,8 @@ final class ZigbeeBridge {
         case "sent":
             lastSweepMs = event.ms
             failedSends += event.failed ?? 0
+        case "snapshot":
+            onLog?("Saved the lights' current colors.")
         case "restored":
             onLog?("Lights restored to their previous colors.")
         case "error":
