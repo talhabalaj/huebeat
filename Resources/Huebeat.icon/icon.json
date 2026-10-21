@@ -1,0 +1,46 @@
+{
+  "fill": {
+    "linear-gradient": [
+      "srgb:0.10000,0.08000,0.22000,1.00000",
+      "srgb:0.03000,0.02000,0.08000,1.00000"
+    ]
+  },
+  "groups": [
+    {
+      "layers": [
+        {
+          "glass": false,
+          "image-name": "huebeat-bulb.png",
+          "name": "huebeat-bulb",
+          "position-specializations": [
+            {
+              "idiom": "square",
+              "value": {
+                "scale": 0.72,
+                "translation-in-points": [
+                  0,
+                  0
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.5
+      },
+      "translucency": {
+        "enabled": false,
+        "value": 0.3
+      },
+      "name": "Huebeat"
+    }
+  ],
+  "supported-platforms": {
+    "circles": [
+      "watchOS"
+    ],
+    "squares": "shared"
+  }
+}

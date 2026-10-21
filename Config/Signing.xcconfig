@@ -1,0 +1,5 @@
+// Every build is signed with the Apple Development certificate. A stable designated requirement
+// (team + bundle ID, not an ad hoc hash) keeps the macOS audio-capture permission across rebuilds.
+CODE_SIGN_STYLE = Automatic
+CODE_SIGN_IDENTITY = Apple Development
+#include? "../Local.xcconfig"

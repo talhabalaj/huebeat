@@ -1,0 +1,390 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6CA52FFE1287DC6ACE249915 /* Huebeat.icon in Resources */ = {isa = PBXBuildFile; fileRef = 649D4A5A71ECFC6E0D64AA83 /* Huebeat.icon */; };
+		7DBF26EB61E99C488B212DC9 /* ColorMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687A27A605C984ABC0ED35A3 /* ColorMath.swift */; };
+		7E18A5657FDC44A16A5827C9 /* LightsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0608E08160BC102CBBD6FD88 /* LightsController.swift */; };
+		8124FFAAF29B619937063B10 /* NativeAudioCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6806964A4B22497DB443E934 /* NativeAudioCapture.swift */; };
+		8D38AEAAD21C015DE6C64C3D /* ZigbeeBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2AFB8404148EE3E3EF4A45A /* ZigbeeBridge.swift */; };
+		97353C3E332120166433D005 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EDFF7CB091CC6B67A76B2B /* ContentView.swift */; };
+		ADA1D3A23D2DB2B57503489E /* AudioColorMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6E04AF28C2AA86CC5849E6 /* AudioColorMapper.swift */; };
+		CA4FAB25A43EBD50412A446E /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98CA35D29F2B85B55512925 /* Models.swift */; };
+		E54E918C1D5A97911D057FAC /* HuebeatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CFE1C3A0D97B68E6F159C5 /* HuebeatApp.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0608E08160BC102CBBD6FD88 /* LightsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightsController.swift; sourceTree = "<group>"; };
+		649D4A5A71ECFC6E0D64AA83 /* Huebeat.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = Huebeat.icon; sourceTree = "<group>"; };
+		6806964A4B22497DB443E934 /* NativeAudioCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeAudioCapture.swift; sourceTree = "<group>"; };
+		687A27A605C984ABC0ED35A3 /* ColorMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorMath.swift; sourceTree = "<group>"; };
+		73289077B579C0359A524E17 /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
+		8F6E04AF28C2AA86CC5849E6 /* AudioColorMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioColorMapper.swift; sourceTree = "<group>"; };
+		A8EDFF7CB091CC6B67A76B2B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		BAAB0DA311F6FD54E195A2DF /* Huebeat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Huebeat.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2AFB8404148EE3E3EF4A45A /* ZigbeeBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZigbeeBridge.swift; sourceTree = "<group>"; };
+		F7CFE1C3A0D97B68E6F159C5 /* HuebeatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HuebeatApp.swift; sourceTree = "<group>"; };
+		F98CA35D29F2B85B55512925 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		1D4B6B3D292BC6C5F5B7008B = {
+			isa = PBXGroup;
+			children = (
+				B96438C9D094E579F2224070 /* Config */,
+				8EFB398D5A00C18FFB5AEC23 /* Resources */,
+				6C72D6C40B3C55DE0693425F /* Sources */,
+				C1F9E39237912FE33A3C1AD5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6C72D6C40B3C55DE0693425F /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				8F6E04AF28C2AA86CC5849E6 /* AudioColorMapper.swift */,
+				687A27A605C984ABC0ED35A3 /* ColorMath.swift */,
+				A8EDFF7CB091CC6B67A76B2B /* ContentView.swift */,
+				F7CFE1C3A0D97B68E6F159C5 /* HuebeatApp.swift */,
+				0608E08160BC102CBBD6FD88 /* LightsController.swift */,
+				F98CA35D29F2B85B55512925 /* Models.swift */,
+				6806964A4B22497DB443E934 /* NativeAudioCapture.swift */,
+				E2AFB8404148EE3E3EF4A45A /* ZigbeeBridge.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		8EFB398D5A00C18FFB5AEC23 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				649D4A5A71ECFC6E0D64AA83 /* Huebeat.icon */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B96438C9D094E579F2224070 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				73289077B579C0359A524E17 /* Signing.xcconfig */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		C1F9E39237912FE33A3C1AD5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BAAB0DA311F6FD54E195A2DF /* Huebeat.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5EB79D3298F0E041ADC8838C /* Huebeat */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BBEA47DDABB99309695D4398 /* Build configuration list for PBXNativeTarget "Huebeat" */;
+			buildPhases = (
+				57F77EF8C344CF9618C6F78F /* Sources */,
+				F53B709BEDE7CFA975B2E9A6 /* Bundle Zigbee helper */,
+				F11A8B42DF3FD121651737A4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Huebeat;
+			packageProductDependencies = (
+			);
+			productName = Huebeat;
+			productReference = BAAB0DA311F6FD54E195A2DF /* Huebeat.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5AFB7E1157108EB9CF1B7B52 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					5EB79D3298F0E041ADC8838C = {
+						DevelopmentTeam = W7TT249CUU;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 4623F16EA8457BBE5E236A8F /* Build configuration list for PBXProject "Huebeat" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 1D4B6B3D292BC6C5F5B7008B;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = C1F9E39237912FE33A3C1AD5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5EB79D3298F0E041ADC8838C /* Huebeat */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F11A8B42DF3FD121651737A4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6CA52FFE1287DC6ACE249915 /* Huebeat.icon in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F53B709BEDE7CFA975B2E9A6 /* Bundle Zigbee helper */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle Zigbee helper";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"$SRCROOT/scripts/bundle-helper.sh\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		57F77EF8C344CF9618C6F78F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ADA1D3A23D2DB2B57503489E /* AudioColorMapper.swift in Sources */,
+				7DBF26EB61E99C488B212DC9 /* ColorMath.swift in Sources */,
+				97353C3E332120166433D005 /* ContentView.swift in Sources */,
+				E54E918C1D5A97911D057FAC /* HuebeatApp.swift in Sources */,
+				7E18A5657FDC44A16A5827C9 /* LightsController.swift in Sources */,
+				CA4FAB25A43EBD50412A446E /* Models.swift in Sources */,
+				8124FFAAF29B619937063B10 /* NativeAudioCapture.swift in Sources */,
+				8D38AEAAD21C015DE6C64C3D /* ZigbeeBridge.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		537CDF098F1DA6160F9468E6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 73289077B579C0359A524E17 /* Signing.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = W7TT249CUU;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		5888EF15477A196B56616FF1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Huebeat;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Config/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = me.balaj.Huebeat;
+				PRODUCT_NAME = Huebeat;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		CAA436D154C684AAD650E1FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Huebeat;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Config/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = me.balaj.Huebeat;
+				PRODUCT_NAME = Huebeat;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		D95F701943111F85926F218E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 73289077B579C0359A524E17 /* Signing.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = W7TT249CUU;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4623F16EA8457BBE5E236A8F /* Build configuration list for PBXProject "Huebeat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				537CDF098F1DA6160F9468E6 /* Debug */,
+				D95F701943111F85926F218E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		BBEA47DDABB99309695D4398 /* Build configuration list for PBXNativeTarget "Huebeat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CAA436D154C684AAD650E1FC /* Debug */,
+				5888EF15477A196B56616FF1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5AFB7E1157108EB9CF1B7B52 /* Project object */;
+}

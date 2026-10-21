@@ -1,0 +1,14 @@
+build/
+DerivedData/
+node_modules/
+.DS_Store
+*.xcresult
+*.log
+Local.xcconfig
+**/xcuserdata/
+**/.build/
+*.dSYM/
+# Zigbee network secrets live in ~/Library/Application Support/Huebeat/Zigbee, never here.
+network.json
+database.db*
+coordinator-backup.json

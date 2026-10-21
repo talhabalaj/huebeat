@@ -1,0 +1,8 @@
+{
+  "name": "huebeat-zigbee-helper",
+  "private": true,
+  "license": "MIT",
+  "dependencies": {
+    "zigbee-herdsman": "11.1.1"
+  }
+}

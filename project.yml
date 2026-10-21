@@ -1,0 +1,54 @@
+name: Huebeat
+options:
+  deploymentTarget:
+    macOS: "26.0"
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+    SWIFT_APPROACHABLE_CONCURRENCY: YES
+    DEVELOPMENT_TEAM: W7TT249CUU
+    ENABLE_HARDENED_RUNTIME: YES
+    MACOSX_DEPLOYMENT_TARGET: "26.0"
+configFiles:
+  Debug: Config/Signing.xcconfig
+  Release: Config/Signing.xcconfig
+targets:
+  Huebeat:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources
+      - path: Resources
+        buildPhase: resources
+    info:
+      path: Config/Info.plist
+      properties:
+        CFBundleDisplayName: $(PRODUCT_NAME)
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSApplicationCategoryType: public.app-category.music
+        LSMultipleInstancesProhibited: true
+        NSPrincipalClass: NSApplication
+        NSAudioCaptureUsageDescription: Huebeat listens to your Mac's audio to pulse your lights to the music.
+    postCompileScripts:
+      - name: Bundle Zigbee helper
+        script: /bin/sh "$SRCROOT/scripts/bundle-helper.sh"
+        basedOnDependencyAnalysis: false
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: NO
+        MARKETING_VERSION: 0.1.0
+        CURRENT_PROJECT_VERSION: 1
+        ARCHS: arm64
+        PRODUCT_NAME: Huebeat
+        PRODUCT_BUNDLE_IDENTIFIER: me.balaj.Huebeat
+        ASSETCATALOG_COMPILER_APPICON_NAME: Huebeat
+        ENABLE_APP_SANDBOX: NO
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+        COMBINE_HIDPI_IMAGES: YES
+schemes:
+  Huebeat:
+    build:
+      targets:
+        Huebeat: all
