@@ -26,7 +26,7 @@ enum ColorMath {
     }
 
     /// Value 0...1000 to a Zigbee level, kept above a floor so beats never black the room out.
-    static func level(value: Int, floor: Int = 40) -> Int {
+    static func level(value: Int, floor: Int = 90) -> Int {
         let scaled = Double(max(0, min(value, 1000))) / 1000 * 254
         return max(floor, min(254, Int(scaled.rounded())))
     }

@@ -49,6 +49,15 @@ enum AnimationStyle: String, CaseIterable, Identifiable {
         case .strobe: "Strobe"
         }
     }
+
+    /// Fade the bulbs run on their own between frames, in tenths of a second. Beats always snap.
+    var bulbTransition: Int {
+        switch self {
+        case .jump, .strobe: 0
+        case .smooth: 3
+        case .chill: 8
+        }
+    }
 }
 
 struct ColorUpdate: Sendable, Equatable {

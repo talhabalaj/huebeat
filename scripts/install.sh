@@ -4,6 +4,8 @@ set -eu
 root="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
 cd "$root"
 xcodegen generate --quiet
+# Xcode doesn't re-seal the app when only helper files change, so always rebuild the bundle itself.
+rm -rf build/DerivedData/Build/Products/Release/Huebeat.app
 xcodebuild -project Huebeat.xcodeproj -scheme Huebeat -configuration Release \
     -derivedDataPath build/DerivedData -allowProvisioningUpdates -quiet build
 app="build/DerivedData/Build/Products/Release/Huebeat.app"

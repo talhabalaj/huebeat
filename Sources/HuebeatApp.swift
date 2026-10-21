@@ -5,6 +5,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     let controller = LightsController()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // `open -a Huebeat --args -HuebeatAutostart YES` starts listening as soon as the dongle is ready (for testing).
+        if UserDefaults.standard.bool(forKey: "HuebeatAutostart") {
+            controller.bridge.onReady = { [controller] in controller.start(config: AppConfig()) }
+        }
         controller.bridge.connect()
     }
 

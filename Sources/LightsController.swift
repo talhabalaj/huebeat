@@ -1,3 +1,4 @@
+import Accelerate
 import AppKit
 import CoreGraphics
 import Observation
@@ -20,6 +21,16 @@ final class LightsController {
     private var config = AppConfig()
     private var lastSent = Date.distantPast
     private var lastQueuedColor: ColorUpdate?
+    private var stats = Stats()
+
+    /// Rolling numbers logged every few seconds, so "the lights aren't moving" can be traced to audio or sending.
+    private struct Stats {
+        var started = Date()
+        var buffers = 0
+        var peak: Float = 0
+        var beats = 0
+        var sent = 0
+    }
 
     init() {
         bridge.onLog = { [weak self] line in self?.appendLog(line) }
@@ -45,6 +56,7 @@ final class LightsController {
         currentColor = nil
         lastQueuedColor = nil
         lastSent = .distantPast
+        stats = Stats()
         mapper = AudioColorMapper(config: config)
         if !config.dryRun { bridge.snapshot() }
 
@@ -139,18 +151,40 @@ final class LightsController {
         guard let mapper else { return }
         let update = mapper.map(samples: samples, channels: channels)
         currentColor = update
+        recordStats(samples: samples, beat: update.beat)
 
         let now = Date()
         let interval = 1.0 / max(0.5, config.maxHz)
         let hueDelta = abs(update.h - (lastQueuedColor?.h ?? -999))
         let valueDelta = abs(update.v - (lastQueuedColor?.v ?? -999))
-        // A beat always goes out; otherwise skip frames that wouldn't visibly change the bulbs.
-        guard now.timeIntervalSince(lastSent) >= interval, update.beat || hueDelta >= 4 || valueDelta >= 25 else { return }
+        let sinceLast = now.timeIntervalSince(lastSent)
+        // Beats jump the queue (one bulb sweep is ~135 ms); other frames are rate-limited and must visibly differ.
+        let due = update.beat ? sinceLast >= 0.15 : sinceLast >= interval && (hueDelta >= 4 || valueDelta >= 25)
+        guard due else { return }
         lastSent = now
         lastQueuedColor = update
+        stats.sent += 1
         guard !config.dryRun else { return }
         let level = config.pulseBrightness ? ColorMath.level(value: update.v) : nil
-        bridge.send(xy: ColorMath.xy(hue: Double(update.h), saturation: Double(update.s) / 1000), level: level)
+        bridge.send(
+            xy: ColorMath.xy(hue: Double(update.h), saturation: Double(update.s) / 1000),
+            level: level,
+            transition: update.beat ? 0 : config.animationStyle.bulbTransition
+        )
+    }
+
+    private func recordStats(samples: [Float], beat: Bool) {
+        var peak: Float = 0
+        vDSP_maxmgv(samples, 1, &peak, vDSP_Length(samples.count))
+        stats.buffers += 1
+        stats.peak = max(stats.peak, peak)
+        if beat { stats.beats += 1 }
+        let elapsed = Date().timeIntervalSince(stats.started)
+        guard elapsed >= 5 else { return }
+        let line = String(format: "Audio peak %.3f · %d buffers · %d beats · %d colors sent in %.0fs", stats.peak, stats.buffers, stats.beats, stats.sent, elapsed)
+        appendLog(stats.peak < 0.002 ? line + " (silent: is anything playing?)" : line)
+        bridge.trace(line)
+        stats = Stats()
     }
 
     private func appendLog(_ line: String) {

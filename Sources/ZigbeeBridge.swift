@@ -22,6 +22,7 @@ final class ZigbeeBridge {
     private(set) var lastSweepMs: Int?
     private(set) var failedSends = 0
     var onLog: ((String) -> Void)?
+    var onReady: (() -> Void)?
 
     private var process: Process?
     private var stdin: FileHandle?
@@ -53,8 +54,9 @@ final class ZigbeeBridge {
     }
 
     /// `exactLevel` always sends brightness; music only sends it when it moved noticeably.
-    func send(xy: ColorMath.XY, level: Int?, exactLevel: Bool = false) {
-        var message: [String: Any] = ["cmd": "color", "x": xy.x, "y": xy.y, "exactLevel": exactLevel]
+    /// `transition` is in tenths of a second; the bulb fades there itself, so smooth modes need no extra frames.
+    func send(xy: ColorMath.XY, level: Int?, exactLevel: Bool = false, transition: Int = 0) {
+        var message: [String: Any] = ["cmd": "color", "x": xy.x, "y": xy.y, "exactLevel": exactLevel, "transition": transition]
         if let level { message["level"] = level }
         write(message)
     }
@@ -67,6 +69,11 @@ final class ZigbeeBridge {
     /// Remembers the bulbs' current state so `restore()` can bring it back after music.
     func snapshot() {
         write(["cmd": "snapshot"])
+    }
+
+    /// Adds a line to ~/Library/Logs/Huebeat/helper.log.
+    func trace(_ line: String) {
+        write(["cmd": "trace", "line": line])
     }
 
     func restore() {
@@ -163,6 +170,7 @@ final class ZigbeeBridge {
             lights = event.lights ?? []
             state = .ready(port: event.port ?? "")
             onLog?("Dongle ready on \(event.port ?? "?") with \(lights.count) lights.")
+            onReady?()
         case "sent":
             lastSweepMs = event.ms
             failedSends += event.failed ?? 0

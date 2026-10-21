@@ -16,10 +16,9 @@ final class AudioColorMapper {
 
     private var hueIndex = 0
     private var currentHue: Double = 0
-    private var lastEnergy = 0.0
     private var energyAverage = 0.1
-    private var bassSlow = 0.001
-    private var bassFast = 0.001
+    private var bassHistory: [Double] = []
+    private var lowpassState = (0.0, 0.0)
     private var beatBoost = 0.0
     private var lastBeatTime = Date.distantPast
     private var lastDriftTime = Date()
@@ -80,20 +79,22 @@ final class AudioColorMapper {
             energy = clamp((rawRms - floor) * gain, 0, 1)
         }
 
-        let attack = max(0, energy - lastEnergy)
-        lastEnergy = energy
 
-        let bassEnergy = bandEnergy(samples: mono)
-        bassFast = bassFast * 0.45 + bassEnergy * 0.55
-        bassSlow = bassSlow * 0.96 + bassEnergy * 0.04
-        let bassRatio = bassFast / max(bassSlow, 0.001)
+        // Beat = bass energy jumping well above its recent (~1 s) average, the classic onset test.
+        let bassEnergy = bassRMS(samples: mono)
+        let history = bassHistory
+        bassHistory.append(bassEnergy)
+        if bassHistory.count > historyLength { bassHistory.removeFirst() }
+        let mean = history.isEmpty ? bassEnergy : history.reduce(0, +) / Double(history.count)
+        let variance = history.isEmpty ? 0 : history.reduce(0) { $0 + ($1 - mean) * ($1 - mean) } / Double(history.count)
 
         let now = Date()
-        let isSilent = energy < 0.01
+        let isSilent = energy < 0.01 && bassEnergy < 0.002
         let isBeat = !isSilent
-            && bassEnergy > floor
-            && bassRatio >= beatThreshold
-            && attack > 0.05
+            && history.count >= historyLength / 2
+            && bassEnergy > 0.002
+            && bassEnergy > mean * beatThreshold * 0.85
+            && bassEnergy > mean + sqrt(variance) * 1.2
             && now.timeIntervalSince(lastBeatTime) >= beatCooldown
 
         let profile = animationProfile(animation)
@@ -125,29 +126,21 @@ final class AudioColorMapper {
         return ColorUpdate(h: Int(currentHue), s: saturation, v: value, beat: isBeat)
     }
 
-    private func bandEnergy(samples: [Float]) -> Double {
+    private var historyLength: Int { 45 }
+
+    /// RMS of the signal below ~150 Hz (two cascaded one-pole low-passes; state carries across buffers).
+    private func bassRMS(samples: [Float]) -> Double {
         guard !samples.isEmpty else { return 0 }
-        let freqs = stride(from: max(20, bassLow), through: bassHigh, by: 20)
-        var total = 0.0
-        var count = 0
-
-        for freq in freqs {
-            let omega = 2.0 * Double.pi * freq / sampleRate
-            let coeff = 2.0 * cos(omega)
-            var q0 = 0.0
-            var q1 = 0.0
-            var q2 = 0.0
-            for sample in samples {
-                q0 = coeff * q1 - q2 + Double(sample)
-                q2 = q1
-                q1 = q0
-            }
-            let power = q1 * q1 + q2 * q2 - coeff * q1 * q2
-            total += sqrt(max(0, power)) / Double(samples.count)
-            count += 1
+        let alpha = 1 - exp(-2 * Double.pi * max(bassHigh, 60) / sampleRate)
+        var (a, b) = lowpassState
+        var sum = 0.0
+        for sample in samples {
+            a += alpha * (Double(sample) - a)
+            b += alpha * (a - b)
+            sum += b * b
         }
-
-        return count == 0 ? 0 : total / Double(count)
+        lowpassState = (a, b)
+        return sqrt(sum / Double(samples.count))
     }
 
     private func animationProfile(_ style: AnimationStyle) -> (driftBase: Double, driftEnergy: Double, jumpOnBeat: Bool, beatDecay: Double) {
