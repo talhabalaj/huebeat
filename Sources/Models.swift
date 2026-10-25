@@ -16,6 +16,14 @@ enum MusicPreset: String, CaseIterable, Identifiable {
         }
     }
 
+    var symbol: String {
+        switch self {
+        case .chill: "moon.stars.fill"
+        case .party: "sparkles"
+        case .reactive: "waveform"
+        }
+    }
+
     // Four bulbs take ~200 ms per sweep one after another, so rates above ~5 Hz just get coalesced.
     var defaults: PresetDefaults {
         switch self {
@@ -50,6 +58,15 @@ enum AnimationStyle: String, CaseIterable, Identifiable {
         }
     }
 
+    var symbol: String {
+        switch self {
+        case .jump: "bolt.fill"
+        case .smooth: "water.waves"
+        case .chill: "leaf.fill"
+        case .strobe: "rays"
+        }
+    }
+
     /// Fade the bulbs run on their own between frames, in tenths of a second. Beats always snap.
     var bulbTransition: Int {
         switch self {
@@ -72,7 +89,10 @@ struct ColorUpdate: Sendable, Equatable {
 }
 
 struct AppConfig: Sendable, Hashable {
-    var preset: MusicPreset = .party
+    // Every surface that changes the preset (window, menu bar) gets the matching tuning.
+    var preset: MusicPreset = .party {
+        didSet { if preset != oldValue { applyPresetDefaults() } }
+    }
     var animationStyle: AnimationStyle = .jump
     var dryRun = false
     var pulseBrightness = true

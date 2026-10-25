@@ -21,6 +21,12 @@ final class ZigbeeBridge {
     private(set) var lights: [ZigbeeLight] = []
     private(set) var lastSweepMs: Int?
     private(set) var failedSends = 0
+    /// Off while Huebeat is in the background: the sweep stats change every sweep and would re-render the stats panel.
+    @ObservationIgnored var publishesStats = true {
+        didSet { if publishesStats { lastSweepMs = pendingSweepMs; failedSends = pendingFailedSends } }
+    }
+    @ObservationIgnored private var pendingSweepMs: Int?
+    @ObservationIgnored private var pendingFailedSends = 0
     var onLog: ((String) -> Void)?
     var onReady: (() -> Void)?
 
@@ -112,6 +118,8 @@ final class ZigbeeBridge {
 
         output.fileHandleForReading.readabilityHandler = { [weak self] handle in
             let data = handle.availableData
+            // EOF reads empty forever; without this the handler spins until the termination handler runs.
+            if data.isEmpty { handle.readabilityHandler = nil; return }
             Task { @MainActor in self?.receive(data) }
         }
         process.terminationHandler = { [weak self] finished in
@@ -172,8 +180,12 @@ final class ZigbeeBridge {
             onLog?("Dongle ready on \(event.port ?? "?") with \(lights.count) lights.")
             onReady?()
         case "sent":
-            lastSweepMs = event.ms
-            failedSends += event.failed ?? 0
+            pendingSweepMs = event.ms
+            pendingFailedSends += event.failed ?? 0
+            if publishesStats {
+                lastSweepMs = pendingSweepMs
+                failedSends = pendingFailedSends
+            }
         case "snapshot":
             onLog?("Saved the lights' current colors.")
         case "restored":

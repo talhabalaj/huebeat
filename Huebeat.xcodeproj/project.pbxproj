@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C03FA2E0E67FDC844EB979C /* OrbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C691C9E1614A26D267B454C /* OrbView.swift */; };
 		6CA52FFE1287DC6ACE249915 /* Huebeat.icon in Resources */ = {isa = PBXBuildFile; fileRef = 649D4A5A71ECFC6E0D64AA83 /* Huebeat.icon */; };
 		7DBF26EB61E99C488B212DC9 /* ColorMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687A27A605C984ABC0ED35A3 /* ColorMath.swift */; };
 		7E18A5657FDC44A16A5827C9 /* LightsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0608E08160BC102CBBD6FD88 /* LightsController.swift */; };
@@ -20,6 +21,7 @@
 
 /* Begin PBXFileReference section */
 		0608E08160BC102CBBD6FD88 /* LightsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightsController.swift; sourceTree = "<group>"; };
+		2C691C9E1614A26D267B454C /* OrbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrbView.swift; sourceTree = "<group>"; };
 		649D4A5A71ECFC6E0D64AA83 /* Huebeat.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = Huebeat.icon; sourceTree = "<group>"; };
 		6806964A4B22497DB443E934 /* NativeAudioCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeAudioCapture.swift; sourceTree = "<group>"; };
 		687A27A605C984ABC0ED35A3 /* ColorMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorMath.swift; sourceTree = "<group>"; };
@@ -53,6 +55,7 @@
 				0608E08160BC102CBBD6FD88 /* LightsController.swift */,
 				F98CA35D29F2B85B55512925 /* Models.swift */,
 				6806964A4B22497DB443E934 /* NativeAudioCapture.swift */,
+				2C691C9E1614A26D267B454C /* OrbView.swift */,
 				E2AFB8404148EE3E3EF4A45A /* ZigbeeBridge.swift */,
 			);
 			path = Sources;
@@ -183,6 +186,7 @@
 				7E18A5657FDC44A16A5827C9 /* LightsController.swift in Sources */,
 				CA4FAB25A43EBD50412A446E /* Models.swift in Sources */,
 				8124FFAAF29B619937063B10 /* NativeAudioCapture.swift in Sources */,
+				0C03FA2E0E67FDC844EB979C /* OrbView.swift in Sources */,
 				8D38AEAAD21C015DE6C64C3D /* ZigbeeBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

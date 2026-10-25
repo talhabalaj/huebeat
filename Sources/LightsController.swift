@@ -15,13 +15,16 @@ final class LightsController {
 
     let bridge = ZigbeeBridge()
 
-    private var capture: NativeAudioCapture?
-    private var captureSession: UUID?
-    private var mapper: AudioColorMapper?
-    private var config = AppConfig()
-    private var lastSent = Date.distantPast
-    private var lastQueuedColor: ColorUpdate?
-    private var stats = Stats()
+    // Written on every audio buffer and read by no view, so keep them out of observation tracking.
+    @ObservationIgnored private var capture: NativeAudioCapture?
+    @ObservationIgnored private var captureSession: UUID?
+    @ObservationIgnored private var mapper: AudioColorMapper?
+    var config = AppConfig()
+    @ObservationIgnored private var lastSent = Date.distantPast
+    @ObservationIgnored private var lastQueuedColor: ColorUpdate?
+    @ObservationIgnored private var stats = Stats()
+    /// The live color only reaches the UI while Huebeat is frontmost; in the background the orb would animate for nobody.
+    @ObservationIgnored private var isAppActive = NSApplication.shared.isActive
 
     /// Rolling numbers logged every few seconds, so "the lights aren't moving" can be traced to audio or sending.
     private struct Stats {
@@ -34,6 +37,25 @@ final class LightsController {
 
     init() {
         bridge.onLog = { [weak self] line in self?.appendLog(line) }
+        let center = NotificationCenter.default
+        center.addObserver(forName: NSApplication.didBecomeActiveNotification, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.isAppActive = true
+                self?.bridge.publishesStats = true
+            }
+        }
+        center.addObserver(forName: NSApplication.didResignActiveNotification, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.freezeLiveColor() }
+        }
+    }
+
+    /// Leaves the last color up without the beat pop, so the frozen orb rests instead of sitting mid-pulse.
+    private func freezeLiveColor() {
+        isAppActive = false
+        bridge.publishesStats = false
+        if let color = currentColor, color.beat {
+            currentColor = ColorUpdate(h: color.h, s: color.s, v: color.v, beat: false)
+        }
     }
 
     func start(config: AppConfig) {
@@ -150,7 +172,6 @@ final class LightsController {
     private func handle(samples: [Float], channels: Int) {
         guard let mapper else { return }
         let update = mapper.map(samples: samples, channels: channels)
-        currentColor = update
         recordStats(samples: samples, beat: update.beat)
 
         let now = Date()
@@ -163,6 +184,9 @@ final class LightsController {
         guard due else { return }
         lastSent = now
         lastQueuedColor = update
+        // The UI follows what the bulbs get (a few Hz), not every ~20 ms audio buffer: each publish re-renders
+        // and restarts the orb animation.
+        if isAppActive { currentColor = update }
         stats.sent += 1
         guard !config.dryRun else { return }
         let level = config.pulseBrightness ? ColorMath.level(value: update.v) : nil
